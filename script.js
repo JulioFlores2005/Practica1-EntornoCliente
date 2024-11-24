@@ -73,3 +73,21 @@ function readTodoItems() {
 
 // Cargar tareas desde el almacenamiento local al iniciar
 readTodoItems();
+
+// Función para actualizar una tarea existente
+function updateTodoItem(e) {
+    const itemText = e.parentElement.parentElement.querySelector("div").innerText; // Obtener el texto de la tarea
+    todoValue.value = itemText; // Establecer el texto en el campo de entrada
+    addUpdate.setAttribute("onclick", "updateOnSelectionItems()"); // Cambiar la función del botón
+}
+
+// Función para eliminar una tarea
+function deleteTodoItem(e) {
+    const deleteValue = e.parentElement.parentElement.querySelector("div").innerText; // Obtener el texto de la tarea
+    if (confirm(`¿Estás seguro de que deseas eliminar "${deleteValue}"?`)) {
+        e.parentElement.parentElement.remove(); // Eliminar el elemento de la lista
+        todo = todo.filter(element => element.item !== deleteValue); // Filtrar la tarea del array
+        setLocalStorage(); // Actualizar el almacenamiento local
+        setAlertMessage("¡Elemento de tarea eliminado con éxito!"); // Mensaje de éxito
+    }
+}

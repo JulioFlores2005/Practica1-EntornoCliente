@@ -100,3 +100,27 @@ h5 {
     padding: 3px; /* Espaciado interno */
     margin-right: 5px; /* Margen derecho */
 }
+
+.todo-checkbox {
+    width: 25px; /* Altura y ancho del checkbox */
+    height: 25px;
+    background-color: transparent;
+    border: 2px solid #000; /* Color del borde */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.todo-checkbox::after {
+    content: '';
+    position: absolute;
+    width: 5px; /* Ancho de la marca */
+    height: 12px; /* Altura de la marca */
+    left: 10px; /* Posicionamiento de la marca */
+    bottom: 6px; /* Posicionamiento de la marca */
+    border: solid #34b93d; /* Color de la marca */
+    border-width: 0 2px 2px 0; /* Estilo de la marca */
+    transform: rotate(45deg); /* Rotar la marca */
+    opacity: 0; /* Inicialmente oculto */
+    transition: opacity 0.2s; /* Transición suave */
+}

@@ -9,7 +9,7 @@ let todo = JSON.parse(localStorage.getItem("todo-list")) || [];
 
 // Función para crear un nuevo elemento de tarea
 function createTodoItem() {
-    if (todoValue.value === "") {
+    if (todoValue.value.trim() === "") {
         setAlertMessage("¡Por favor, ingresa tu tarea!");
         todoValue.focus(); // Enfocar el campo de entrada
         return; // Salir de la función
@@ -25,7 +25,8 @@ function createTodoItem() {
     // Crear un nuevo elemento de lista
     let li = document.createElement("li");
     const todoItems = `
-        <div title="Haz doble clic para completar" ondblclick="completeTodoItem(this)">${todoValue.value}</div>
+        <input type="checkbox" class="todo-checkbox" onchange="toggleComplete(this)" />
+        <div class="todo-text">${todoValue.value}</div>
         <div>
             <img class="edit todo-controls" onclick="updateTodoItem(this)" src="images/pencil.png" />
             <img class="delete todo-controls" onclick="deleteTodoItem(this)" src="images/delete.png" />
@@ -36,10 +37,11 @@ function createTodoItem() {
 
     // Agregar la tarea al array y actualizar el almacenamiento local
     todo.push({ item: todoValue.value, status: false });
-    setLocalStorage();
+    setLocalStorage(); // Asegúrate de que esta función esté correctamente implementada
     setAlertMessage("¡Elemento de tarea creado con éxito!"); // Mensaje de éxito
     todoValue.value = ""; // Limpiar el campo de entrada
 }
+
 
 // Función para guardar en el almacenamiento local
 function setLocalStorage() {
@@ -56,11 +58,12 @@ function setAlertMessage(message) {
 
 // Función para leer los elementos de tarea desde el almacenamiento local
 function readTodoItems() {
-    todo.forEach(element => {
+    listItems.innerHTML = ""; // Limpiar la lista actual
+    todo.forEach(item => {
         let li = document.createElement("li");
-        let style = element.status ? "style='text-decoration: line-through'" : ""; // Estilo si está completada
         const todoItems = `
-            <div ${style} title="Haz doble clic para completar" ondblclick="completeTodoItem(this)">${element.item}</div>
+            <input type="checkbox" class="todo-checkbox" onchange="toggleComplete(this)" ${item.status ? 'checked' : ''} />
+            <div class="todo-text" style="text-decoration: ${item.status ? 'line-through' : 'none'};">${item.item}</div>
             <div>
                 <img class="edit todo-controls" onclick="updateTodoItem(this)" src="images/pencil.png" />
                 <img class="delete todo-controls" onclick="deleteTodoItem(this)" src="images/delete.png" />
@@ -79,7 +82,8 @@ let updateText = null;
 
 // Función para guardar la tarea actualizada
 function UpdateOnSelectionItems() {
-    let isPresent = todo.some(element => element.item === todoValue.value); // Verificar si el nuevo valor ya existe
+    const newValue = todoValue.value.trim(); // Obtener el nuevo valor y eliminar espacios
+    let isPresent = todo.some(element => element.item === newValue); // Verificar si el nuevo valor ya existe
 
     if (isPresent) {
         setAlertMessage("¡Este elemento ya está en la lista!");
@@ -89,18 +93,20 @@ function UpdateOnSelectionItems() {
     // Actualizar el texto de la tarea existente
     todo.forEach(element => {
         if (element.item === updateText.innerText.trim()) {
-            element.item = todoValue.value; // Actualizar el texto
+            element.item = newValue; // Actualizar el texto
         }
     });
 
+    console.log("Tareas después de actualizar:", todo); // Mostrar el estado del array después de la actualización
     setLocalStorage(); // Actualizar el almacenamiento local
 
-    updateText.innerText = todoValue.value; // Actualizar el texto en el DOM
+    updateText.innerText = newValue; // Actualizar el texto en el DOM
     addUpdate.setAttribute("onclick", "createTodoItem()"); // Cambiar la función del botón
     addUpdate.setAttribute("src", "/images/plus.png"); // Restablecer la imagen del botón
     todoValue.value = ""; // Limpiar el campo de entrada
     setAlertMessage("¡Elemento de tarea actualizado con éxito!"); // Mensaje de éxito
 }
+
 
 
 function updateTodoItem(e) {
@@ -122,15 +128,35 @@ function updateTodoItem(e) {
 
 // Función para eliminar una tarea
 function deleteTodoItem(e) {
-    const deleteValue = e.parentElement.parentElement.querySelector("div").innerText; // Obtener el texto de la tarea
+    const deleteValue = e.parentElement.parentElement.querySelector(".todo-text").innerText.trim(); // Obtener el texto de la tarea y eliminar espacios
+    console.log("Intentando eliminar:", deleteValue); // Mostrar el texto que se intenta eliminar
     if (confirm(`¿Estás seguro de que deseas eliminar "${deleteValue}"?`)) {
-        e.parentElement.parentElement.remove(); // Eliminar el elemento de la lista
-        todo = todo.filter(element => element.item !== deleteValue); // Filtrar la tarea del array
+        // Filtrar la tarea del array
+        todo = todo.filter(element => element.item.trim() !== deleteValue); // Comparar sin espacios
+        console.log("Tareas después de eliminar:", todo); // Mostrar el estado del array después de la eliminación
         setLocalStorage(); // Actualizar el almacenamiento local
+
+        // Eliminar el elemento de la lista
+        e.parentElement.parentElement.remove(); 
         setAlertMessage("¡Elemento de tarea eliminado con éxito!"); // Mensaje de éxito
     }
 }
 
+//Funcionar para manejar el cambio de estado
+function toggleComplete(checkbox) {
+    const todoTextElement = checkbox.parentElement.querySelector('.todo-text');
+    const todoItemText = todoTextElement.innerText;
+
+    todo.forEach(element => {
+        if (element.item === todoItemText) {
+            element.status = checkbox.checked; // Actualiza el estado
+            todoTextElement.style.textDecoration = checkbox.checked ? 'line-through' : 'none'; // Cambia el estilo
+        }
+    });
+
+    setLocalStorage(); // Actualizar el almacenamiento local
+}
+/*
 // Función para completar una tarea
 function completeTodoItem(e) {
     e.parentElement.querySelector("div").style.textDecoration = "line-through"; // Marcar como completada
@@ -141,4 +167,4 @@ function completeTodoItem(e) {
     });
     setLocalStorage(); // Actualizar el almacenamiento local
     setAlertMessage("¡Elemento de tarea completado con éxito!"); // Mensaje de éxito
-}
+}*/

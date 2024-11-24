@@ -53,3 +53,23 @@ function setAlertMessage(message) {
         todoAlert.innerText = ""; // Limpiar el mensaje después de 3 segundos
     }, 3000);
 }
+
+// Función para leer los elementos de tarea desde el almacenamiento local
+function readTodoItems() {
+    todo.forEach(element => {
+        let li = document.createElement("li");
+        let style = element.status ? "style='text-decoration: line-through'" : ""; // Estilo si está completada
+        const todoItems = `
+            <div ${style} title="Haz doble clic para completar" ondblclick="completeTodoItem(this)">${element.item}</div>
+            <div>
+                <img class="edit todo-controls" onclick="updateTodoItem(this)" src="images/pencil.png" />
+                <img class="delete todo-controls" onclick="deleteTodoItem(this)" src="images/delete.png" />
+            </div>`;
+        
+        li.innerHTML = todoItems; // Agregar contenido al elemento de lista
+        listItems.appendChild(li); // Añadir el nuevo elemento a la lista
+    });
+}
+
+// Cargar tareas desde el almacenamiento local al iniciar
+readTodoItems();

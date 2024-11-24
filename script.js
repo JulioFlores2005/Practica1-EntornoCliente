@@ -74,11 +74,40 @@ function readTodoItems() {
 // Cargar tareas desde el almacenamiento local al iniciar
 readTodoItems();
 
+// Función para guardar la tarea actualizada
+function UpdateOnSelectionItems() {
+    let IsPresent = false;
+    todo.forEach((element) => {
+        if (element.item == todoValue.value) {
+            IsPresent = true; // Verificar si la tarea ya está en la lista
+        }
+    });
+
+    if (IsPresent) {
+        setAlertMessage("¡Este elemento ya está en la lista!");
+        return; // Salir de la función
+    }
+
+    todo.forEach((element) => {
+        if (element.item == updateText.innerText.trim()) {
+            element.item = todoValue.value; // Actualizar el texto
+        }
+    });
+    setLocalStorage(); // Actualizar el almacenamiento local
+
+    updateText.innerText = todoValue.value; // Actualizar el texto en el DOM
+    addUpdate.setAttribute("onclick", "createTodoItem()"); // Cambiar la función del botón
+    addUpdate.setAttribute("src", "/images/plus.png"); // Restablecer la imagen del botón
+    todoValue.value = ""; // Limpiar el campo de entrada
+    setAlertMessage("¡Elemento de tarea actualizado con éxito!"); // Mensaje de éxito
+}
+
 // Función para actualizar una tarea existente
 function updateTodoItem(e) {
     const itemText = e.parentElement.parentElement.querySelector("div").innerText; // Obtener el texto de la tarea
     todoValue.value = itemText; // Establecer el texto en el campo de entrada
     addUpdate.setAttribute("onclick", "updateOnSelectionItems()"); // Cambiar la función del botón
+    updateText = e.parentElement.parentElement.querySelector("div"); // Guardar referencia al texto actualizado
 }
 
 // Función para eliminar una tarea

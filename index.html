@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicación de Lista de Tareas</title>
+    <link rel="stylesheet" href="style.css"> <!-- Enlace a la hoja de estilos -->
+</head>
+<body>
+    <div class="container">
+        <div class="todo-header">
+            <h2>Lista de Tareas</h2>
+            <img src="images/notebook.gif" height="50px" alt="Notebook">
+        </div>
+        <div class="todo-body">
+            <input type="text" id="todoText" class="todo-input" placeholder="Agregar tarea...">
+            <img src="images/plus.png" alt="Agregar" id="AddUpdateClick" onclick="createTodoItem();">
+        </div>
+        <h5 id="alert"></h5>
+        <ul id="list-items" class="list-items"></ul>
+    </div>
+    <script src="script.js"></script> <!-- Enlace al archivo JavaScript -->
+</body>
+</html>

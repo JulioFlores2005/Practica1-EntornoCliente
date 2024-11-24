@@ -91,3 +91,15 @@ function deleteTodoItem(e) {
         setAlertMessage("¡Elemento de tarea eliminado con éxito!"); // Mensaje de éxito
     }
 }
+
+// Función para completar una tarea
+function completeTodoItem(e) {
+    e.parentElement.querySelector("div").style.textDecoration = "line-through"; // Marcar como completada
+    todo.forEach(element => {
+        if (e.parentElement.querySelector("div").innerText.trim() === element.item) {
+            element.status = true; // Cambiar el estado a completada
+        }
+    });
+    setLocalStorage(); // Actualizar el almacenamiento local
+    setAlertMessage("¡Elemento de tarea completado con éxito!"); // Mensaje de éxito
+}

@@ -74,25 +74,25 @@ function readTodoItems() {
 // Cargar tareas desde el almacenamiento local al iniciar
 readTodoItems();
 
+// Variable global para almacenar el elemento que se está editando
+let updateText = null;
+
 // Función para guardar la tarea actualizada
 function UpdateOnSelectionItems() {
-    let IsPresent = false;
-    todo.forEach((element) => {
-        if (element.item == todoValue.value) {
-            IsPresent = true; // Verificar si la tarea ya está en la lista
-        }
-    });
+    let isPresent = todo.some(element => element.item === todoValue.value); // Verificar si el nuevo valor ya existe
 
-    if (IsPresent) {
+    if (isPresent) {
         setAlertMessage("¡Este elemento ya está en la lista!");
         return; // Salir de la función
     }
 
-    todo.forEach((element) => {
-        if (element.item == updateText.innerText.trim()) {
+    // Actualizar el texto de la tarea existente
+    todo.forEach(element => {
+        if (element.item === updateText.innerText.trim()) {
             element.item = todoValue.value; // Actualizar el texto
         }
     });
+
     setLocalStorage(); // Actualizar el almacenamiento local
 
     updateText.innerText = todoValue.value; // Actualizar el texto en el DOM
@@ -102,13 +102,23 @@ function UpdateOnSelectionItems() {
     setAlertMessage("¡Elemento de tarea actualizado con éxito!"); // Mensaje de éxito
 }
 
-// Función para actualizar una tarea existente
+
 function updateTodoItem(e) {
+    // Eliminar la clase de edición de todas las tareas
+    const allItems = document.querySelectorAll('#list-items li div');
+    allItems.forEach(item => item.classList.remove('editing'));
+
     const itemText = e.parentElement.parentElement.querySelector("div").innerText; // Obtener el texto de la tarea
     todoValue.value = itemText; // Establecer el texto en el campo de entrada
-    addUpdate.setAttribute("onclick", "updateOnSelectionItems()"); // Cambiar la función del botón
     updateText = e.parentElement.parentElement.querySelector("div"); // Guardar referencia al texto actualizado
+    updateText.classList.add('editing'); // Añadir clase de edición al elemento
+
+    addUpdate.setAttribute("onclick", "UpdateOnSelectionItems()"); // Cambiar la función del botón
+    addUpdate.setAttribute("src", "/images/refresh.png"); // Cambiar la imagen del botón a refrescar
+    todoValue.focus(); // Enfocar el campo de entrada
 }
+
+
 
 // Función para eliminar una tarea
 function deleteTodoItem(e) {
